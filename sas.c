@@ -24,6 +24,7 @@ typedef struct {
 
 Player players[MAX];
 int playersNum = 0;
+bool found = false;
 char notification[50] = "";
 char negativeNotification[50] = "";
 
@@ -238,13 +239,8 @@ void sortPlayersByName() {
     }
 }
 
-void editPlayer(){
+int searchById(){
 	int id;
-	int change;
-	char newpost[50];
-        int newgoals;
-	bool found = false;
-	system("cls");
 	printf("Entrez Id de joueur: ");
 	scanf("%d", &id);
 		
@@ -266,25 +262,61 @@ void editPlayer(){
 	            break;
 	        }
 	}
+	return id;
+}
+
+void searchByName(){
+	char name[50];
+	printf("\n Entrez prenom du joueur: ");
+	scanf("%s", name);
+	for (int i = 0; i < playersNum; i++) {
+		if (strcasecmp(players[i].f_name, name) == 0) {
+			printf("\n------------------ Joueur trouve ------------------\n");
+			printf("Id: %d\n", players[i].id);
+			printf("Prenom: %s\n", players[i].f_name);
+			printf("Nom: %s\n", players[i].l_name);
+			printf("Numero de maillot: %d\n", players[i].shirtNum);
+			printf("Poste: %s\n", players[i].post);
+			printf("Buts: %d\n", players[i].goals);
+			printf("Age: %d\n", players[i].age);
+			printf("Date de naissance: %s\n", players[i].birthday);
+			printf("Date d'inscription: %s\n", players[i].inscription);
+			printf("Statut: %s\n", players[i].status);
+			printf("---------------------------------------------------\n");
+			found = true;
+			break;
+		}
+	}
+}
+
+void editPlayer(){
+	system("cls");
+	int id= searchById();
+	int change;
+	char newpost[50];
+    int newgoals;
+	
 	if(found){
-        	printf("\n1. le poste\n2. le nombre de buts\n Qu est ce que voulez vous modifier: ");
+        printf("\n1. le poste\n2. le nombre de buts\n Qu est ce que voulez vous modifier: ");
 		scanf("%d", &change);
 		switch(change){
 		    case 1:
 		    	printf("\n Le nouveau poste: ");
-			scanf("%s", newpost);
-			if(strcasecmp(newpost, "gardien") == 0 || strcasecmp(newpost, "attaquant") == 0 || strcasecmp(newpost, "deffenseur") == 0){
-			    	strcpy(players[id].post, newpost);
-			    	strcpy(notification, "   Poste modifiee avec succes!");
-		    	}else {
-				strcpy(negativeNotification, "  Ce poste n'est pas valide!");
-			}
-			break;
+		 		scanf("%s", newpost);
+				if(strcasecmp(newpost, "gardien") == 0 || strcasecmp(newpost, "attaquant") == 0 || strcasecmp(newpost, "deffenseur") == 0){
+						strcpy(players[id].post, newpost);
+						strcpy(notification, " Poste modifiee avec succes!");
+				}else {
+					strcpy(negativeNotification, "  Ce poste n'est pas valide!");
+				}
+				found = false;
+				break;
 		    case 2:
-			printf("\n Le nouveau nombre de buts: ");
-			scanf("%d", &newgoals);
-			players[id].goals = newgoals;
-			strcpy(notification, "Nombre de buts modifiee avec succes!");
+				printf("\n Le nouveau nombre de buts: ");
+				scanf("%d", &newgoals);
+				players[id].goals = newgoals;
+				strcpy(notification, "Nombre de buts modifiee avec succes!");
+				found = false;
 		}
 	}else{
 		strcpy(negativeNotification, "  Cette Id n'existe pas!");
@@ -293,30 +325,10 @@ void editPlayer(){
 }
 
 void deletePlayer(){
-	int id;
-	int answer;
-	bool found = false;
 	system("cls");
-	printf("\n Entrez Id de joueur: ");
-	scanf("%d", &id);
-	for (int i = 0; i < playersNum; i++) {
-	    if (players[i].id == id) {
-	        printf("\n------------------ Joueur trouve ------------------\n");
-	        printf("Id: %d\n", players[i].id);
-	        printf("Prenom: %s\n", players[i].f_name);
-	        printf("Nom: %s\n", players[i].l_name);
-	        printf("Numero de maillot: %d\n", players[i].shirtNum);
-	        printf("Poste: %s\n", players[i].post);
-	        printf("Buts: %d\n", players[i].goals);
-	        printf("Age: %d\n", players[i].age);
-	        printf("Date de naissance: %s\n", players[i].birthday);
-	        printf("Date d'inscription: %s\n", players[i].inscription);
-	        printf("Statut: %s\n", players[i].status);
-	        printf("---------------------------------------------------\n");
-	        found = true;
-	        break;
-	    }
-	}
+	int id = searchById();
+	int answer;
+
 	if(found){
 		printf("\n Etes vous sur de supprimer ce joueur (1. yes/0. non): ");
 		scanf("%d", &answer);
@@ -334,11 +346,8 @@ void deletePlayer(){
 }
 
 void search(){
-	int id;
-	char name[50];
 	int c;
 	int exit;
-	bool found = false;
 	system("cls");
 	printf("\n 1. Par Id\n 2. Par prenom\n\n Choix: ");
 	scanf("%d", &c);
@@ -346,58 +355,23 @@ void search(){
 	switch(c){
 		case 1:
 			system("cls");
-			printf("\n Entrez Id du joueur: ");
-			scanf("%d", &id);
-			for (int i = 0; i < playersNum; i++) {
-			    if (players[i].id == id) {
-			        printf("\n------------------ Joueur trouve ------------------\n");
-			        printf("Id: %d\n", players[i].id);
-			        printf("Prenom: %s\n", players[i].f_name);
-			        printf("Nom: %s\n", players[i].l_name);
-			        printf("Numero de maillot: %d\n", players[i].shirtNum);
-			        printf("Poste: %s\n", players[i].post);
-			        printf("Buts: %d\n", players[i].goals);
-			        printf("Age: %d\n", players[i].age);
-			        printf("Date de naissance: %s\n", players[i].birthday);
-			        printf("Date d'inscription: %s\n", players[i].inscription);
-			        printf("Statut: %s\n", players[i].status);
-			        printf("---------------------------------------------------\n");
-			        found = true;
-					scanf("%d", &exit);
-			        break;
-			    }
+			searchById();
+			if(found){
+				scanf("%d", &exit);
 			}
+			break;
 		case 2:
 			system("cls");
-			printf("\n Entrez prenom du joueur: ");
-			scanf("%s", name);
-			for (int i = 0; i < playersNum; i++) {
-			    if (strcasecmp(players[i].f_name, name) == 0) {
-			        printf("\n------------------ Joueur trouve ------------------\n");
-			        printf("Id: %d\n", players[i].id);
-			        printf("Prenom: %s\n", players[i].f_name);
-			        printf("Nom: %s\n", players[i].l_name);
-			        printf("Numero de maillot: %d\n", players[i].shirtNum);
-			        printf("Poste: %s\n", players[i].post);
-			        printf("Buts: %d\n", players[i].goals);
-			        printf("Age: %d\n", players[i].age);
-			        printf("Date de naissance: %s\n", players[i].birthday);
-			        printf("Date d'inscription: %s\n", players[i].inscription);
-			        printf("Statut: %s\n", players[i].status);
-			        printf("---------------------------------------------------\n");
-			        found = true;
-					scanf("%d", &exit);
-			        break;
-			    }
+			searchByName();
+			if(found){
+				scanf("%d", &exit);
 			}
-			
-		if(!found){
-			strcpy(negativeNotification, "  Ce joueur n'existe pas!");
 			break;
-		}
 	}
-	
-	
+	if(!found){
+		strcpy(negativeNotification, "  Ce joueur n'existe pas!");
+	}
+	found = false;
 	
 }
 
